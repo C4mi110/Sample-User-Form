@@ -1,6 +1,6 @@
 Initialize the project.
 
-### `npm init`
+### `npm install`
 
 Run the project.
 
