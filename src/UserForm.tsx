@@ -1,6 +1,6 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import axios from 'axios';
+import axios from "axios"; 
 
 type PersonData = {
   name: string,
@@ -10,7 +10,21 @@ type PersonData = {
   gender: string,
 }
 
-class UserForm extends React.Component {
+type ErrorMsgs = {
+  name?: string;
+  surname?: string;
+  email?: string;
+}
+
+
+class UserForm extends React.Component<{}, {isSumbitBtnOff: boolean;}> {
+
+  constructor(props: boolean) {
+    super(props);
+    this.state = { 
+      isSumbitBtnOff: true,
+    };
+  }
 
   initialValues: PersonData = {
     name: '',
@@ -20,8 +34,8 @@ class UserForm extends React.Component {
     gender: ''
   }
 
-  validate = (values:PersonData):Array<any> => {
-    const errors: any = {};
+  validate = (values:PersonData):ErrorMsgs => {
+    const errors = {} as ErrorMsgs;
     if (!values.name) {
       errors.name = 'Required';
     } else if (values.name.length < 3) {
@@ -33,12 +47,12 @@ class UserForm extends React.Component {
     } else if (values.surname.length > 20) {
       errors.surname = 'No more than 20 characters';
     }
-
-    (!errors.name && errors.surname ? this.setState({ isBtnOff: false }) : null);
+    
     return errors;
   };
   
   validateEmail = async (value: string):Promise<string> => {
+    this.setState({ isSumbitBtnOff: true }) 
     let error = "";
     if (!value) {
       error = 'Required';
@@ -49,7 +63,7 @@ class UserForm extends React.Component {
         error = "Invalid e-mail address";
       }
     }
-    (!error ? this.setState({ isBtnOff: false }) : null);
+    (!error ? this.setState({ isSumbitBtnOff: false }) : null);
     return error;
   }
 
@@ -108,7 +122,7 @@ class UserForm extends React.Component {
                 </div>
               </div>
 
-              <button type="submit" className="btn btn-primary" aria-label="submit" >Submit</button>
+              <button type="submit" className="btn btn-primary" disabled={this.state.isSumbitBtnOff} aria-label="submit">Submit</button>
             </Form>
             )}
           </Formik>
